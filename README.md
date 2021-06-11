@@ -10,5 +10,5 @@ Perf Status will show Perf console, Perf Record will generate `perftrace` in the
 ## STAMP 
 Written by Tonie Lai  
 Run Under STAMP directory  
-`$./stamp.sh`
+`$./stamp.sh`  
 Log file will be generate under `$STAMMP_BASE/recore/run_log` directory
