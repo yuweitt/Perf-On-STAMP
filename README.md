@@ -1,6 +1,6 @@
 # Perf-On-STAMP
 
 * Usage
-Run Under STAMP directory
-`./perProbeRun.sh`
+Run Under STAMP directory  
+`$./perProbeRun.sh`
 
