@@ -1,5 +1,5 @@
 STAMP_BASE="/home/yuweitt/stm/stm-tracing/stamp-0.9.10"
-
+PTRACE_DIR="$STAMP_BASE/ptrace"
 # Stamp Benchmark list
 declare -a stamp_tests
 stamp_tests+=(bayes)
@@ -29,12 +29,12 @@ start="stm_start"
 commit="stm_commit"
 commit_r="stm_commit_return__return"
 rollback="stm_rollback"
-# delay="stm_delay"
-# delay_r="stm_delay_return__return"
+delay="stm_delay"
+delay_r="stm_delay_return__return"
 ul="_"
 
-# probe_list="stm_start stm_commit stm_commit%return stm_rollback stm_delay stm_delay%return"
-probe_list="stm_start stm_commit stm_commit%return stm_rollback"
+probe_list="stm_start stm_commit stm_commit%return stm_rollback stm_delay stm_delay%return"
+# probe_list="stm_start stm_commit stm_commit%return stm_rollback"
 
 sudo perf probe --del=*stm*
 for bench_test in ${stamp_tests[@]};do
@@ -48,10 +48,9 @@ done
 # sudo perf probe --list
 
 
-# -e $probe$bench_test:$bench_test$ul$delay \
-# -e $probe$bench_test:$bench_test$ul$delay_r \
 
 read -r -p "Perf status [0] / Perf record [1] " resp
+mkdir -p $PTRACE_DIR/${nthreads}
 case "$resp" in 
   [0])
     for bench_test in ${stamp_tests[@]};do
@@ -61,10 +60,13 @@ case "$resp" in
                         -e $probe$bench_test:$bench_test$ul$commit\
                         -e $probe$bench_test:$bench_test$ul$commit_r\
                         -e $probe$bench_test:$bench_test$ul$rollback \
+                        -e $probe$bench_test:$bench_test$ul$delay \
+                        -e $probe$bench_test:$bench_test$ul$delay_r \
                         ./$bench_test ${stamp_cmd[${bench_test}]} ${nthreads}"
     done
   ;;
   [1])
+    
     for bench_test in ${stamp_tests[@]};do
       cd "$STAMP_BASE/$bench_test"
       echo $PWD
@@ -72,8 +74,11 @@ case "$resp" in
                           -e $probe$bench_test:$bench_test$ul$commit\
                           -e $probe$bench_test:$bench_test$ul$commit_r\
                           -e $probe$bench_test:$bench_test$ul$rollback \
+                          -e $probe$bench_test:$bench_test$ul$delay \
+                          -e $probe$bench_test:$bench_test$ul$delay_r \
                           ./$bench_test ${stamp_cmd[${bench_test}]} ${nthreads}"
-      sudo perf script --ns -F tid,time,event > ../${bench_test}ptrace
+      sudo perf script --ns -F tid,time,event > $PTRACE_DIR/${nthreads}/${bench_test}ptrace
+      echo "$bench_test:$ ${stamp_cmd[${bench_test}]}" >>  $PTRACE_DIR/${nthreads}/config.log
     done
   ;;
   *)
