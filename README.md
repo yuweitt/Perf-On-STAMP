@@ -18,7 +18,3 @@ Written by Tonie Lai
 Run Under STAMP directory  
 `$./stamp.sh`  
 Log file will be generate under `$STAMMP_BASE/recore/run_log` directory
-
-  
-## Perf Data Link  
-[Drive Link](https://drive.google.com/drive/u/3/folders/1xnPyXfc4vJQ-WNxF1A-qQ3hTpccX19sG)
