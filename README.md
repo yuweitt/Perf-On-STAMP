@@ -10,7 +10,7 @@ Replace `thread.*` in `STAMP/lib/` (thread affinity)
 ### Usage  
 Run Under STAMP directory. Make sure to specify file name in command argument.  
 ex. `$./perProbeRun.sh CTL_BACKOFF`  
-The file name will be like '2021_06_17_CTL_BACKOFF'  
+The file name will be like `2021_06_17_CTL_BACKOFF`  
 If not specified, the file name will only contain date, and older version will be replaced.  
 You will be asked to select **Perf Status[0]** or **Perf Record[1]**  
 Perf Status will show Perf console, Perf Record will generate `perftrace` in the `ptrace` directory.
