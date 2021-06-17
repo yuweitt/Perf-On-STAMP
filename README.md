@@ -19,5 +19,5 @@ Perf Status only shows Perf console, Perf Record generates `perftrace` in the `p
 Written by Tonie Lai  
 Run Under STAMP directory.  
 A few modified. Make sure to specify file name in command argument.   
-ex. `$./stamp.sh ETL_BACKOFF`
+ex. `$./stamp.sh ETL_BACKOFF`  
 Log file will be generate under `$STAMMP_BASE/recore/run_log` directory
