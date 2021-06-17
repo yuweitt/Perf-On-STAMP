@@ -27,18 +27,18 @@ CYCLES=10
 
 #TODO: Currently only support single suffix
 declare -a suffices
-suffices+=(seq)
-# suffices+=(stm)
+# suffices+=(seq)
+suffices+=(stm)
 
 declare -a stamp_tests
 stamp_tests+=(bayes)
 stamp_tests+=(genome)
 stamp_tests+=(intruder)
 stamp_tests+=(kmeans)
-# stamp_tests+=(labyrinth)
+stamp_tests+=(labyrinth)
 stamp_tests+=(ssca2)
 stamp_tests+=(vacation)
-# stamp_tests+=(yada) 
+stamp_tests+=(yada) 
 
 # declare -a THREAD_NUM=("1" "2" "4" "8" "16")
 
@@ -46,14 +46,14 @@ declare -a THREAD_NUM=("4")
 
 
 declare -A stamp_cmd
-stamp_cmd["bayes"]="-v32 -r4096 -n10 -p40 -i2 -e8 -s1 -t" 
+stamp_cmd["bayes"]="-v32 -r1024 -n2 -p20 -s0 -i2 -e2 -t" 
 stamp_cmd["genome"]="-g16384 -s64 -n16777216 -t"
-stamp_cmd["intruder"]="-a10 -l128 -n8152 -s1 -t"
-stamp_cmd["kmeans"]="-m40 -n40 -t0.00001 -i ${STAMP_BASE}/kmeans/inputs/random-n65536-d32-c16.txt -p"
+stamp_cmd["intruder"]="-a10 -l128 -n262144 -s1 -t"
+stamp_cmd["kmeans"]=" -m40 -n40 -t0.00001 -i ${STAMP_BASE}/kmeans/inputs/random-n65536-d32-c16.txt -p"
+stamp_cmd["labyrinth"]="-i ${STAMP_BASE}/labyrinth/inputs/random-x512-y512-z7-n512.txt -t"
 stamp_cmd["ssca2"]="-s20 -i1.0 -u1.0 -l3 -p3 -t"
-stamp_cmd["yada"]="-a15 -i ${STAMP_BASE}/yada/inputs/ttimeu1000000.2 -t"
 stamp_cmd["vacation"]="-n2 -q90 -u98 -r1048576 -t4194304 -t"
-
+stamp_cmd["yada"]="-a15 -i ${STAMP_BASE}/yada/inputs/ttimeu1000000.2 -t"
 
 
 
@@ -98,7 +98,7 @@ for bench_test in ${stamp_tests[@]}; do
 done
 
 # Saving the current status of testing.
-LOG_DIR="${RECORDING_DIR}/run_log/$(date '+%Y_%m_%d_%H_%M_%S')"
+LOG_DIR="${RECORDING_DIR}/run_log/$(date '+%Y_%m_%d_')$1"
 LOG_FILE="${LOG_DIR}/script_parameters"
 mkdir -p ${LOG_DIR}
 
@@ -120,8 +120,9 @@ for ((j=0; j<${CYCLES}; j++)); do
     for nthreads in "${THREAD_NUM[@]}"; do
         mkdir -p ${LOG_DIR}/${bench_test}
         for bench_test in  ${stamp_tests[@]}; do
+            cd "$STAMP_BASE/$bench_test"
             echo "${STAMP_BASE}/${bench_test}/${bench_test} ${stamp_cmd[${bench_test}]} ${nthreads}"
-           	eval "${STAMP_BASE}/${bench_test}/${bench_test} ${stamp_cmd[${bench_test}]} ${nthreads}"  | grep "ime" |  tee -a  ${LOG_DIR}/${bench_test}.log
+           	eval "./${bench_test} ${stamp_cmd[${bench_test}]} ${nthreads}"  | grep '[Tt]ime' |  tee -a  ${LOG_DIR}/${bench_test}.log
 		done
 
         echo -n -e "thread counts=${nthreads}:" | tee -a  ${LOG_DIR}/${bench_test}/rst

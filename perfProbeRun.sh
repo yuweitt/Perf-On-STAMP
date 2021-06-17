@@ -1,5 +1,6 @@
 STAMP_BASE="/home/yuweitt/stm/stm-tracing/stamp-0.9.10"
-PTRACE_DIR="$STAMP_BASE/ptrace"
+STM_BASE="/home/yuweitt/stm/stm-tracing/tinySTM"
+PTRACE_DIR="$STAMP_BASE/ptrace/$(date '+%Y_%m_%d_')$1"
 # Stamp Benchmark list
 declare -a stamp_tests
 stamp_tests+=(bayes)
@@ -17,7 +18,7 @@ stamp_cmd["bayes"]="-v32 -r1024 -n2 -p20 -s0 -i2 -e2 -t"
 stamp_cmd["genome"]="-g16384 -s64 -n16777216 -t"
 stamp_cmd["intruder"]="-a10 -l128 -n262144 -s1 -t"
 stamp_cmd["kmeans"]=" -m40 -n40 -t0.00001 -i ${STAMP_BASE}/kmeans/inputs/random-n65536-d32-c16.txt -p"
-stamp_cmd["labyrinth"]="./labyrinth -i ${STAMP_BASE}/labyrinth/inputs/random-x512-y512-z7-n512.txt -t"
+stamp_cmd["labyrinth"]="-i ${STAMP_BASE}/labyrinth/inputs/random-x512-y512-z7-n512.txt -t"
 stamp_cmd["ssca2"]="-s20 -i1.0 -u1.0 -l3 -p3 -t"
 stamp_cmd["vacation"]="-n2 -q90 -u98 -r1048576 -t4194304 -t"
 stamp_cmd["yada"]="-a15 -i ${STAMP_BASE}/yada/inputs/ttimeu1000000.2 -t"
@@ -47,10 +48,11 @@ for bench_test in ${stamp_tests[@]};do
 done
 # sudo perf probe --list
 
-
+LOG_FILE="${PTRACE_DIR}/config.txt"
 
 read -r -p "Perf status [0] / Perf record [1] " resp
-mkdir -p $PTRACE_DIR/${nthreads}
+mkdir -p $PTRACE_DIR
+cat ${STM_BASE}/Makefile  | grep "^DEFINES"  >> ${LOG_FILE}
 case "$resp" in 
   [0])
     for bench_test in ${stamp_tests[@]};do
@@ -77,8 +79,8 @@ case "$resp" in
                           -e $probe$bench_test:$bench_test$ul$delay \
                           -e $probe$bench_test:$bench_test$ul$delay_r \
                           ./$bench_test ${stamp_cmd[${bench_test}]} ${nthreads}"
-      sudo perf script --ns -F tid,time,event > $PTRACE_DIR/${nthreads}/${bench_test}ptrace
-      echo "$bench_test:$ ${stamp_cmd[${bench_test}]}" >>  $PTRACE_DIR/${nthreads}/config.log
+      sudo perf script --ns -F tid,time,event > $PTRACE_DIR/${bench_test}ptrace
+      echo "$bench_test:$ ${stamp_cmd[${bench_test}]}" >>  $LOG_FILE
     done
   ;;
   *)
