@@ -1,5 +1,11 @@
 # Perf-On-STAMP
 
+
+## Code Modified  
+Replace `stm_internal.h` in `tinySTM/src` (stm_delay entry)  
+Replace `thread.*` in `STAMP/lib/` (thread affinity)  
+
+
 ## Perf Probe and Run
 ### Usage  
 Run Under STAMP directory  
