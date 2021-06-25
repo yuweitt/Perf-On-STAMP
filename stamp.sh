@@ -40,9 +40,9 @@ stamp_tests+=(ssca2)
 stamp_tests+=(vacation)
 stamp_tests+=(yada) 
 
-# declare -a THREAD_NUM=("1" "2" "4" "8" "16")
+declare -a THREAD_NUM=("1" "2" "4" "8" )
 
-declare -a THREAD_NUM=("4")
+# declare -a THREAD_NUM=("4")
 
 
 declare -A stamp_cmd
@@ -116,16 +116,16 @@ done
 
 cat ${STM_BASE}/Makefile  | grep "^DEFINES"  >> ${LOG_FILE}
 
-for ((j=0; j<${CYCLES}; j++)); do
-    for nthreads in "${THREAD_NUM[@]}"; do
-        mkdir -p ${LOG_DIR}/${bench_test}
+for nthreads in "${THREAD_NUM[@]}"; do
+    mkdir -p ${LOG_DIR}/${nthreads}
+    for ((j=0; j<${CYCLES}; j++)); do
         for bench_test in  ${stamp_tests[@]}; do
             cd "$STAMP_BASE/$bench_test"
             echo "${STAMP_BASE}/${bench_test}/${bench_test} ${stamp_cmd[${bench_test}]} ${nthreads}"
-           	eval "./${bench_test} ${stamp_cmd[${bench_test}]} ${nthreads}"  | grep '[Tt]ime' |  tee -a  ${LOG_DIR}/${bench_test}.log
+           	eval "./${bench_test} ${stamp_cmd[${bench_test}]} ${nthreads}"  | grep '[Tt]ime' |  tee -a  ${LOG_DIR}/${nthreads}/${bench_test}.log
 		done
 
-        echo -n -e "thread counts=${nthreads}:" | tee -a  ${LOG_DIR}/${bench_test}/rst
+        # echo -n -e "thread counts=${nthreads}:" | tee -a  ${LOG_DIR}/${bench_test}/rst
         #cat  "${LOG_DIR}/${bench_test}/${nthreads}.log" | awk -F" " '{sum+=$2} END {print sum/NR}' | tee -a  ${LOG_DIR}/${bench_test}/rst
     done
 done
