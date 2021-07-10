@@ -24,6 +24,10 @@ Log file will be generate under `$STAMMP_BASE/recore/run_log` directory
 
 
 ## Rec.py
-
 Calculate the average execution time and plot the result.  
 You can refer to [matplotlib](https://matplotlib.org/stable/gallery/color/named_colors.html) to change color of the cylinder.  
+
+### Usage
+Put your log file path as sysarg.  
+ex: `$  python Rec.py record/run_log/2050_12_25_ETL_SUICIDE`  
+You'll see `summary.txt` under the log file and a pop out plot window.  
