@@ -21,3 +21,9 @@ Run Under STAMP directory.
 A few modified. Make sure to specify file name in command argument.   
 ex. `$./stamp.sh ETL_BACKOFF`  
 Log file will be generate under `$STAMMP_BASE/recore/run_log` directory
+
+
+## Rec.py
+
+Calculate the average execution time and plot the result.  
+You can refer to [matplotlib](https://matplotlib.org/stable/gallery/color/named_colors.html) to change color of the cylinder.  
