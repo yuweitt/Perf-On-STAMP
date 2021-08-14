@@ -1,22 +1,16 @@
-import glob, os
-import re
-import sys
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import glob, os
+import argparse
+import sys
+import re
 
 application = ['genome', 'intruder', 'kmeans', 'ssca2', 'vacation', 'labyrinth', 'bayes', 'yada']
 Time = []
 color = ['lightcoral', 'yellowgreen', 'lightgreen', 'c' ]
 
-# sub directory
-os.chdir(sys.argv[1])
-subdirs = [x[0] for x in os.walk('.')]
-subdirs.pop(0)
-subdirs.sort()
-test_num = len(application)
-
 # Calculate Average Execution of each stamp test
-def genAverage(FileName, ssca):
+def genAverage(FileName, ssca, outFile):
     iteration = 10
     with open(FileName, 'r+') as fh:
         sum = 0
@@ -33,7 +27,7 @@ def genAverage(FileName, ssca):
         outFile.write("\n")
 
 # Plot chart
-def plot():
+def plot(subdirs, test_num):
     tab = 0.25
     x = np.arange(len(application))
     width = 0.2
@@ -47,17 +41,32 @@ def plot():
     plt.show()
 
 
+def main():
+    parser = argparse.ArgumentParser(prog='Record and Plot', description='Calculate and plot average time of each STAMP test.')
+    parser.add_argument('--file', '-f', default='file', type=str, required=True, help='Directory of your STAMP log.') 
+    args = parser.parse_args()
 
-# Walks through directorys
-for dirs in subdirs:
-    outFile = open(dirs + "/summary.txt", "w")
-    for file in glob.glob(dirs + "/*.log"):
-        outFile.write("--------------------------------\n")
-        outFile.write(file)
-        outFile.write("\n")
-        if("ssca" in file):
-            genAverage(file, 1)
-        else:
-            genAverage(file, 0)
-print(Time)
-plot()
+    # sub directory
+    os.chdir(args.file)
+    subdirs = [x[0] for x in os.walk('.')]
+    subdirs.pop(0)
+    subdirs.sort()
+    test_num = len(application)
+
+    # Walks through directorys
+    for dirs in subdirs:
+        outFile = open(dirs + "/summary.txt", "w")
+        for f in glob.glob(dirs + "/*.log"):
+            outFile.write("--------------------------------\n")
+            outFile.write(f)
+            outFile.write("\n")
+            if("ssca" in f):
+                genAverage(f, 1, outFile)
+            else:
+                genAverage(f, 0, outFile)
+    print(Time)
+    plot(subdirs, test_num)
+
+
+if __name__ == '__main__':
+    main()
